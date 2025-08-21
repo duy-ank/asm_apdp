@@ -1,0 +1,350 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Dashboard - Hi There!";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<!-- Thêm FontAwesome để dùng icon -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+      crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<style>
+    /* CSS cải tiến với màu sắc mới */
+    :root {
+        --primary: #6C63FF;
+        --secondary: #FF6584;
+        --accent: #36D1DC;
+        --dark: #2D2B55;
+        --light: #F8F9FC;
+        --success: #4CC9A7;
+    }
+
+    .dashboard-container {
+        padding: 50px 30px;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(108, 99, 255, 0.3);
+        margin: 30px auto;
+        max-width: 1200px;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .dashboard-container::before {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: -100px;
+            left: -100px;
+        }
+
+        .dashboard-container::after {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 50%;
+            bottom: -150px;
+            right: -150px;
+        }
+
+    .dashboard-banner {
+        text-align: center;
+        margin-bottom: 30px;
+        position: relative;
+        z-index: 2;
+    }
+
+        .dashboard-banner img {
+            max-width: 45%;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(45, 43, 85, 0.3);
+            animation: float 6s ease-in-out infinite;
+            border: 5px solid white;
+        }
+
+    .dashboard-title {
+        font-size: 3.5rem;
+        color: white;
+        text-align: center;
+        margin-bottom: 30px;
+        font-weight: 800;
+        text-shadow: 3px 3px 10px rgba(45, 43, 85, 0.4);
+        animation: slideIn 1s ease-out;
+        position: relative;
+        z-index: 2;
+    }
+
+    .dashboard-card {
+        background: rgba(248, 249, 252, 0.95);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 15px 35px rgba(45, 43, 85, 0.2);
+        transition: transform 0.4s ease, box-shadow 0.4s ease;
+        position: relative;
+        z-index: 2;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+        .dashboard-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 45px rgba(45, 43, 85, 0.25);
+        }
+
+        .dashboard-card p {
+            font-size: 1.3rem;
+            color: var(--dark);
+            line-height: 1.8;
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+    .feature-list {
+        list-style-type: none;
+        padding-left: 0;
+        margin-bottom: 40px;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+        .feature-list li {
+            font-size: 1.2rem;
+            color: var(--dark);
+            margin: 15px 0;
+            position: relative;
+            padding: 20px 20px 20px 65px;
+            animation: fadeInUp 0.5s ease-out;
+            animation-fill-mode: backwards;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .feature-list li:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            }
+
+            .feature-list li:nth-child(1) {
+                animation-delay: 0.1s;
+            }
+
+            .feature-list li:nth-child(2) {
+                animation-delay: 0.2s;
+            }
+
+            .feature-list li:nth-child(3) {
+                animation-delay: 0.3s;
+            }
+
+            .feature-list li:nth-child(4) {
+                animation-delay: 0.4s;
+            }
+
+            .feature-list li i {
+                color: var(--primary);
+                position: absolute;
+                left: 20px;
+                font-size: 1.8rem;
+                top: 50%;
+                transform: translateY(-50%);
+                background: rgba(108, 99, 255, 0.1);
+                width: 45px;
+                height: 45px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+            }
+
+            .feature-list li:hover i {
+                background: var(--primary);
+                color: white;
+                transform: translateY(-50%) scale(1.1);
+            }
+
+    .button-group {
+        text-align: center;
+        margin-top: 40px;
+    }
+
+    .btn-custom {
+        padding: 18px 45px;
+        font-size: 1.2rem;
+        border-radius: 50px;
+        margin: 0 15px;
+        transition: all 0.4s ease;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+        border: none;
+    }
+
+        .btn-custom::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: all 0.4s ease;
+            z-index: -1;
+        }
+
+        .btn-custom:hover::before {
+            width: 100%;
+        }
+
+    .btn-primary-custom {
+        background: linear-gradient(90deg, var(--secondary), #FF8FA3);
+        color: #fff;
+    }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 12px 25px rgba(255, 101, 132, 0.35);
+        }
+
+    .btn-secondary-custom {
+        background: linear-gradient(90deg, var(--success), #3BB59B);
+        color: #fff;
+    }
+
+        .btn-secondary-custom:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 12px 25px rgba(76, 201, 167, 0.35);
+        }
+
+    /* Animation keyframes */
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @@keyframes slideIn {
+        from {
+            transform: translateY(-50px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    @@keyframes fadeInUp {
+        from {
+            transform: translateY(20px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    @@keyframes float {
+        0% {
+            transform: translateY(0px);
+        }
+
+        50% {
+            transform: translateY(-15px);
+        }
+
+        100% {
+            transform: translateY(0px);
+        }
+    }
+
+    /* Responsive design */
+    @@media (max-width: 992px) {
+        .feature-list {
+            grid-template-columns: 1fr;
+        }
+
+        .dashboard-banner img {
+            max-width: 70%;
+        }
+
+        .dashboard-title {
+            font-size: 2.8rem;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .dashboard-container {
+            padding: 30px 15px;
+        }
+
+        .dashboard-card {
+            padding: 30px 20px;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .btn-custom {
+            margin: 5px 0;
+            width: 80%;
+        }
+
+        .dashboard-title {
+            font-size: 2.2rem;
+        }
+
+        .dashboard-banner img {
+            max-width: 85%;
+        }
+    }
+</style>
+
+<div class="dashboard-container">
+    <div class="dashboard-banner">
+    </div>
+    <h2 class="dashboard-title">Welcome to Student Information Management System</h2>
+    <div class="dashboard-card">
+        <p>
+            The <strong>Student Information Management System (SIMS)</strong> is a cutting-edge platform designed to streamline the management of students, teachers, courses, and classrooms. With an elegant interface and robust features, SIMS empowers you to:
+        </p>
+        <ul class="feature-list">
+            <li><i class="fas fa-users"></i> Manage Student and Teacher information easily.</li>
+            <li><i class="fas fa-book"></i> Create and update courses with ease.</li>
+            <li><i class="fas fa-calendar-alt"></i> Schedule and organize classrooms seamlessly.</li>
+            <li><i class="fas fa-image"></i> Upload stunning course images.</li>
+        </ul>
+
+        <div class="button-group">
+            <a class="btn btn-custom btn-primary-custom" asp-controller="Student" asp-action="Index">Explore Students</a>
+            <a class="btn btn-custom btn-secondary-custom" asp-controller="Courses" asp-action="Index">Discover Courses</a>
+        </div>
+    </div>
+</div>

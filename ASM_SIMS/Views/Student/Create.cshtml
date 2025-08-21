@@ -1,0 +1,180 @@
+﻿@model ASM_SIMS.Models.StudentViewModel
+@using ASM_SIMS.DB
+@{
+    ViewData["Title"] = "Create New Student";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+    var classRooms = ViewBag.ClassRooms as List<ClassRoom>;
+    var courses = ViewBag.Courses as List<Courses>;
+}
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="d-flex align-items-center mb-4">
+                <a asp-action="Index" class="btn btn-outline-secondary me-3">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <h2 class="mb-0"><i class="fas fa-user-plus text-primary me-2"></i>Create New Student</h2>
+            </div>
+
+            @if (ViewData.ModelState.Any(x => x.Value.Errors.Any()) || (TempData["save"] != null && !(bool)TempData["save"]))
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <h6 class="alert-heading"><i class="fas fa-exclamation-triangle me-2"></i>Validation Errors</h6>
+                    <ul class="mb-0">
+                        @if (ViewData.ModelState.Any(x => x.Value.Errors.Any()))
+                        {
+                            foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                            {
+                                <li>@error.ErrorMessage</li>
+                            }
+                        }
+                        else
+                        {
+                            <li>Operation failed. Please check the data again.</li>
+                        }
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-gradient-primary text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-user-circle me-2"></i>Student Information</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" asp-action="Create" class="needs-validation" novalidate>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <label asp-for="FullName" class="form-label fw-bold">Full Name *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                        <input asp-for="FullName" class="form-control" placeholder="Enter full name" required />
+                                    </div>
+                                    <span asp-validation-for="FullName" class="text-danger small"></span>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label asp-for="Email" class="form-label fw-bold">Email *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                        <input asp-for="Email" class="form-control" type="email" placeholder="Enter email address" required />
+                                    </div>
+                                    <span asp-validation-for="Email" class="text-danger small"></span>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label asp-for="Phone" class="form-label fw-bold">Phone Number *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                        <input asp-for="Phone" class="form-control" placeholder="Enter phone number" required />
+                                    </div>
+                                    <span asp-validation-for="Phone" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <label asp-for="Address" class="form-label fw-bold">Address</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                        <input asp-for="Address" class="form-control" placeholder="Enter address" />
+                                    </div>
+                                    <span asp-validation-for="Address" class="text-danger small"></span>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label asp-for="ClassRoomId" class="form-label fw-bold">Class *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-school"></i></span>
+                                        <select asp-for="ClassRoomId" class="form-select" required>
+                                            <option value="">-- Select Class --</option>
+                                            @foreach (var classRoom in classRooms)
+                                            {
+                                                <option value="@classRoom.Id">@classRoom.ClassName</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <span asp-validation-for="ClassRoomId" class="text-danger small"></span>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label asp-for="CourseId" class="form-label fw-bold">Course *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-book"></i></span>
+                                        <select asp-for="CourseId" class="form-select" required>
+                                            <option value="">-- Select Course --</option>
+                                            @foreach (var course in courses)
+                                            {
+                                                <option value="@course.Id">@course.NameCourse</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <span asp-validation-for="CourseId" class="text-danger small"></span>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label asp-for="Status" class="form-label fw-bold">Status *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-check-circle"></i></span>
+                                        <select asp-for="Status" class="form-select" required>
+                                            <option value="">-- Select Status --</option>
+                                            <option value="Active">Active</option>
+                                            <option value="Inactive">Inactive</option>
+                                        </select>
+                                    </div>
+                                    <span asp-validation-for="Status" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-times me-1"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-check me-1"></i> Create Student
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const forms = document.querySelector('.needs-validation');
+            forms.addEventListener('submit', function(event) {
+                if (!forms.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                forms.classList.add('was-validated');
+            }, false);
+        });
+    </script>
+
+    <style>
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #4e73df 0%, #224abe 100%) !important;
+        }
+
+        .card {
+            border-radius: 12px;
+        }
+
+        .input-group-text {
+            background-color: #f8f9fa;
+            border-right: none;
+        }
+
+        .form-control:focus + .input-group-text {
+            border-color: #4e73df;
+        }
+    </style>
+}

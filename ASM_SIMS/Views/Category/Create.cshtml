@@ -1,0 +1,164 @@
+﻿@model ASM_SIMS.Models.CategoryDetail
+@{
+    ViewData["title"] = "Create New Category";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="d-flex align-items-center mb-4">
+                <a href="@Url.Action("Index", "Category")" class="btn btn-outline-secondary me-3">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <h2 class="mb-0"><i class="fas fa-plus-circle text-primary me-2"></i>Create New Category</h2>
+            </div>
+
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-gradient-primary text-white py-3">
+                    <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Category Information</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" enctype="multipart/form-data" asp-controller="Category" asp-action="Create"
+                          class="needs-validation" novalidate>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="mb-4">
+                                    <label asp-for="NameCategory" class="form-label fw-bold">Category Name *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                                        <input asp-for="NameCategory" class="form-control" type="text"
+                                               placeholder="Enter category name" required />
+                                    </div>
+                                    <span asp-validation-for="NameCategory" class="text-danger small"></span>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label asp-for="Description" class="form-label fw-bold">Description</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-align-left"></i></span>
+                                        <textarea asp-for="Description" class="form-control" rows="5"
+                                                  placeholder="Enter category description"></textarea>
+                                    </div>
+                                    <div class="form-text">Provide a detailed description of this category.</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="mb-4">
+                                    <label asp-for="ViewAvatar" class="form-label fw-bold">Category Image</label>
+                                    <div class="file-upload-container border rounded p-3 text-center">
+                                        <div class="mb-3">
+                                            <i class="fas fa-cloud-upload-alt fa-2x text-muted"></i>
+                                        </div>
+                                        <input asp-for="ViewAvatar" class="form-control" type="file"
+                                               accept="image/*" id="avatarUpload" />
+                                        <label for="avatarUpload" class="btn btn-outline-primary btn-sm mt-2">
+                                            <i class="fas fa-upload me-1"></i> Choose File
+                                        </label>
+                                        <div class="form-text">JPG, PNG or GIF (Max 2MB)</div>
+                                        <span asp-validation-for="ViewAvatar" class="text-danger small d-block"></span>
+                                    </div>
+                                </div>
+
+                                <div class="image-preview-container text-center mt-3 d-none">
+                                    <img id="imagePreview" class="img-thumbnail"
+                                         style="max-height: 150px; display: none;" />
+                                    <button type="button" class="btn btn-sm btn-outline-danger mt-2 d-none"
+                                            id="removeImage">
+                                        <i class="fas fa-times me-1"></i> Remove
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                            <a href="@Url.Action("Index", "Category")" class="btn btn-secondary">
+                                <i class="fas fa-times me-1"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-check me-1"></i> Create Category
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Image preview functionality
+        document.getElementById('avatarUpload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const preview = document.getElementById('imagePreview');
+            const previewContainer = document.querySelector('.image-preview-container');
+            const removeBtn = document.getElementById('removeImage');
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    removeBtn.classList.remove('d-none');
+                    previewContainer.classList.remove('d-none');
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('removeImage').addEventListener('click', function() {
+            const input = document.getElementById('avatarUpload');
+            const preview = document.getElementById('imagePreview');
+            const removeBtn = document.getElementById('removeImage');
+
+            input.value = '';
+            preview.src = '';
+            preview.style.display = 'none';
+            removeBtn.classList.add('d-none');
+        });
+
+        // Form validation
+        document.addEventListener('DOMContentLoaded', function() {
+            const forms = document.querySelector('.needs-validation');
+            forms.addEventListener('submit', function(event) {
+                if (!forms.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                forms.classList.add('was-validated');
+            }, false);
+        });
+    </script>
+
+    <style>
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #4e73df 0%, #224abe 100%) !important;
+        }
+
+        .file-upload-container {
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+            .file-upload-container:hover {
+                background: #e9ecef;
+                border-color: #4e73df !important;
+            }
+
+        .card {
+            border-radius: 12px;
+        }
+
+        .input-group-text {
+            background-color: #f8f9fa;
+            border-right: none;
+        }
+
+        .form-control:focus + .input-group-text {
+            border-color: #4e73df;
+        }
+    </style>
+}

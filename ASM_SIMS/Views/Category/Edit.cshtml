@@ -1,0 +1,210 @@
+﻿@model ASM_SIMS.Models.CategoryDetail
+@{
+    ViewData["Title"] = "Edit Category";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="d-flex align-items-center mb-4">
+                <a href="@Url.Action("Index", "Category")" class="btn btn-outline-secondary me-3">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <h2 class="mb-0"><i class="fas fa-edit text-warning me-2"></i>Edit Category</h2>
+            </div>
+
+            @if (TempData["save"] != null)
+            {
+                <div class="alert @((bool)TempData["save"] ? "alert-success" : "alert-danger") alert-dismissible fade show" role="alert">
+                    @((bool)TempData["save"] ? "Category updated successfully!" : "Failed to update category.")
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light py-3">
+                    <h5 class="mb-0"><i class="fas fa-pencil-alt me-2"></i>Edit Category Details</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Edit" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="mb-4">
+                                    <label asp-for="NameCategory" class="form-label fw-bold">Category Name *</label>
+                                    <input class="form-control form-control-lg" asp-for="NameCategory"
+                                           placeholder="Enter category name" required />
+                                    <span asp-validation-for="NameCategory" class="text-danger small"></span>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label asp-for="Description" class="form-label fw-bold">Description</label>
+                                    <textarea class="form-control" asp-for="Description" rows="6"
+                                              placeholder="Enter category description"></textarea>
+                                    <span asp-validation-for="Description" class="text-danger small"></span>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label asp-for="Status" class="form-label fw-bold">Status</label>
+                                    <select class="form-select" asp-for="Status">
+                                        <option value="Active">Active</option>
+                                        <option value="Inactive">Inactive</option>
+                                    </select>
+                                    <span asp-validation-for="Status" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="sticky-top" style="top: 20px;">
+                                    <div class="card">
+                                        <div class="card-header bg-light">
+                                            <h6 class="mb-0"><i class="fas fa-image me-2"></i>Category Image</h6>
+                                        </div>
+                                        <div class="card-body text-center">
+                                            @if (!string.IsNullOrEmpty(Model.Avartar))
+                                            {
+                                                <div class="current-image mb-3">
+                                                    <p class="text-muted small">Current Image</p>
+                                                    <img src="~/SIMS/uploads/images/@Model.Avartar"
+                                                         alt="@Model.NameCategory"
+                                                         class="img-fluid rounded shadow-sm mb-3"
+                                                         style="max-height: 200px;"
+                                                         onerror="this.src='https://via.placeholder.com/200?text=Image+Not+Found'">
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="text-center py-4">
+                                                    <i class="fas fa-image fa-2x text-muted mb-2"></i>
+                                                    <p class="text-muted small">No image uploaded</p>
+                                                </div>
+                                            }
+
+                                            <div class="image-upload-section">
+                                                <label class="form-label fw-bold">Upload New Image</label>
+                                                <input type="file" name="ViewAvatar" class="form-control"
+                                                       accept="image/*" id="newAvatar" />
+                                                <div class="form-text">Leave empty to keep current image</div>
+
+                                                <div class="image-preview mt-3 text-center d-none" id="imagePreviewContainer">
+                                                    <p class="text-muted small">New Image Preview</p>
+                                                    <img id="newImagePreview" class="img-thumbnail"
+                                                         style="max-height: 150px; display: none;" />
+                                                    <button type="button" class="btn btn-sm btn-outline-danger mt-2 d-none"
+                                                            id="cancelNewImage">
+                                                        <i class="fas fa-times me-1"></i> Cancel
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-1"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-warning">
+                                <i class="fas fa-save me-1"></i> Update Category
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Image preview functionality for new image
+        document.getElementById('newAvatar').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const preview = document.getElementById('newImagePreview');
+            const previewContainer = document.getElementById('imagePreviewContainer');
+            const cancelBtn = document.getElementById('cancelNewImage');
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    cancelBtn.classList.remove('d-none');
+                    previewContainer.classList.remove('d-none');
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('cancelNewImage').addEventListener('click', function() {
+            const input = document.getElementById('newAvatar');
+            const preview = document.getElementById('newImagePreview');
+            const cancelBtn = document.getElementById('cancelNewImage');
+            const previewContainer = document.getElementById('imagePreviewContainer');
+
+            input.value = '';
+            preview.src = '';
+            preview.style.display = 'none';
+            cancelBtn.classList.add('d-none');
+            previewContainer.classList.add('d-none');
+        });
+
+        // Form validation
+        document.addEventListener('DOMContentLoaded', function() {
+            const forms = document.querySelector('.needs-validation');
+            forms.addEventListener('submit', function(event) {
+                if (!forms.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                forms.classList.add('was-validated');
+            }, false);
+        });
+    </script>
+
+    <style>
+        .card {
+            border-radius: 10px;
+        }
+
+        .form-control-lg {
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+            .form-control-lg:focus {
+                border-color: #ffc107;
+                box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
+            }
+
+        .btn-warning {
+            background-color: #ffc107;
+            border-color: #ffc107;
+            color: #212529;
+            font-weight: 600;
+        }
+
+            .btn-warning:hover {
+                background-color: #e0a800;
+                border-color: #d39e00;
+            }
+
+        .sticky-top {
+            z-index: 1019;
+        }
+
+        .current-image img {
+            transition: transform 0.3s ease;
+        }
+
+            .current-image img:hover {
+                transform: scale(1.05);
+            }
+    </style>
+}
